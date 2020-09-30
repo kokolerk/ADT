@@ -1,0 +1,26 @@
+# ADT
+/*judge if the poped sequence is wright based on the given pushed.
+新建一个stack，模拟出栈操作，判断最后stack是否为0。
+C++ vector函数，动态线性数组 :pushed.size();
+stack function :stack.pop();stack.push();stack.top();*/
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+bool validatestacksequence(vector<int>& pushed,vector<int>& poped)
+{  stack<int>temp;
+   int index=0;
+   for(int i=0;i<pushed.size();i++)
+   {
+       temp.push(pushed[i]);
+       while(!temp.empty()&&poped[index]==temp.top())
+       {
+           temp.pop();
+           index++;
+       }
+   }
+   return temp.empty();
+
+}
+
