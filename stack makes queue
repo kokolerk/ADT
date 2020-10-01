@@ -2,7 +2,7 @@
 #include <vector>
 #include <stack>
 using namespace std;
-
+/*用两个栈来实现队列的push，pop，peek（top），empty操作*/
 class MyQueue {
 public:
      stack<int>pushed;
@@ -23,23 +23,15 @@ public:
         int temp;
         if(poped.empty())
         {
-            for(int i=0; i<pushed.size(); i++)
+            while(!pushed.empty())
             {
                 poped.push(pushed.top());
                 pushed.pop();
             }
+        }
             temp=poped.top();
             poped.pop();
             return temp;
-        }
-        else
-        {
-            temp=poped.top();
-            poped.pop();
-            return temp;
-
-        }
-
         }
 
     /** Get the front element. */
@@ -48,7 +40,7 @@ public:
         return poped.top();
       else
       {
-           for(int i=0; i<pushed.size(); i++)
+           while(!pushed.empty())
             {
                 poped.push(pushed.top());
                 pushed.pop();
@@ -61,12 +53,11 @@ public:
 
     /** Returns whether the queue is empty. */
     bool empty() {
-     if(pushed.empty()&&poped.empty())
-        return true;
-     else
-        return false;
+     return pushed.empty()&&poped.empty();
     }
+
 };
+
 
 /**
  * Your MyQueue object will be instantiated and called as such:
@@ -76,3 +67,6 @@ public:
  * int param_3 = obj->peek();
  * bool param_4 = obj->empty();
  */
+/*第一次编程出现失误，可能是笔者对stack的判断用了for循环，for（int i=0;i<a.size(),i++）来实现，而不是while（！a.empty()）。
+然而实际上，笔者做了一个小程序进行试验，发现一个非常奇怪的问题，就是top上面还有一个空的元素，一开始是没有任何效果的，
+也就是说，你必须把i的上限变成a.size()+1，这样才可以把所有的栈内元素进行操作。具体原理笔者还不知道，欢迎大佬来解惑。*/
