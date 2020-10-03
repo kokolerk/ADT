@@ -1,0 +1,44 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+     queue<TreeNode*>que;//用队列来帮助层序遍历
+    if(root!=NULL) 
+     que.push(root);
+     vector<vector<int>>result;
+     while(!que.empty())//错误第一个，判断队列是否为空，用empty，这是在stack里面的教训，不要用size个数什么的
+     {
+         vector<int>vec;
+         int i=que.size();//一定要固定que.size，否则，他一直在变。
+         for(int k=0;k<i;k++)
+         {
+             TreeNode* r=que.front();
+             que.pop();
+             if(r!=NULL)
+             {
+                 vec.push_back(r->val);
+                 if(r->left)//判断条件要写上，对null进行筛选
+                 que.push(r->left);
+                 if(r->right)
+                 que.push(r->right);
+             }
+         }
+         result.push_back(vec);
+     }
+     return result;
+    }
+};
+/*二叉树层序遍历方法，借助队列的思想，先进先出。
+深度优先遍历：就是中序、先序、后序遍历，对一支深入直到再也不能深入
+广度优先遍历：也叫层序遍历，就是一层一层遍历。
+还有搜索，但是笔者还没有学习到。
+
+*/
