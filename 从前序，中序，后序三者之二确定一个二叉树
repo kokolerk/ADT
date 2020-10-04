@@ -7,6 +7,7 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+ //中序、后序
 class Solution {
 public:
     TreeNode* buildTree(vector<int>&inorder, vector<int>&postorder) {
@@ -33,5 +34,49 @@ public:
     root->left=buildTree(leftinorder,leftpostorder);
     root->right=buildTree(rightinorder,rightpostorder);
     return root;
+    }
+};
+//前序、中序，好像比前者更高效
+class Solution {
+public:
+    
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+     if(preorder.empty())
+     return NULL;
+       TreeNode *root=new(struct TreeNode);
+       root->val=preorder.front();
+       int posroot;
+       for(int i=0;i<inorder.size();i++)
+       {
+           if(inorder[i]==preorder[0])
+           {
+            posroot=i; 
+            break;   
+
+           }
+           
+       }
+     vector<int>leftpreorder(preorder.begin()+1,preorder.begin()+posroot+1);
+     vector<int>leftinorder(inorder.begin(),inorder.begin()+posroot);
+     vector<int>rightpreorder(preorder.begin()+posroot+1,preorder.end());
+     vector<int>rightinorder(inorder.begin()+posroot+1,inorder.end());
+        
+    
+     if(!leftpreorder.empty()) 
+          {
+              root->left=buildTree(leftpreorder, leftinorder); 
+          }
+     else
+          root->left=NULL;
+     if(!rightpreorder.empty())
+     {
+             root->right=buildTree(rightpreorder, rightinorder);
+     }
+          
+     else
+          root->right=NULL; 
+    
+    
+     return root;
     }
 };
