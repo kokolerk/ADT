@@ -7,6 +7,12 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+ /*
+ 1、前序后序无法唯一确定，其它均可唯一确定
+ 2、三种函数参数，传值，传地址，引用（&），明白怎么回事https://blog.csdn.net/qq_36638930/article/details/80181513
+ 3、vector的使用，左开右闭，迭代器end，begin拷贝元素
+ 4、递归，新建指针
+ */
  //中序、后序
 class Solution {
 public:
