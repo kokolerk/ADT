@@ -1,0 +1,39 @@
+class Solution {
+public:
+    TreeNode* recoverFromPreorder(string S) {
+        stack<TreeNode*> path;
+        int pos = 0;
+        while (pos < S.size()) {
+            int level = 0;
+            while (S[pos] == '-') {
+                ++level;
+                ++pos;
+            }
+            int value = 0;
+            while (pos < S.size() && isdigit(S[pos])) {
+                value = value * 10 + (S[pos] - '0');//关于字符转化为int计算的问题，一直都是莫名其妙的ASCLL。但是加了‘0’，不知道为什么又变成正常的了
+                ++pos;
+            }
+            TreeNode* node = new TreeNode(value);
+          /*  if (level == path.size()) {
+                if (!path.empty()) {//这部不判断会超时
+                    path.top()->left = node;
+                }
+            }
+            else {
+                while (level != path.size()) {
+                    path.pop();
+                }
+                path.top()->right = node;
+            }*/这是在stack非空的操作，要考虑头结点，也就是root，所以要在里面判断一下，最后把他们都压进栈里面，对，head单独考虑
+            path.push(node);
+        }
+        while (path.size() > 1) {
+            path.pop();
+        }
+        return path.top();
+    }
+};
+//直接上leetcode官方解答吧，我一开始没有做出来，感觉还是没有发现本质的规律吧，而且对先序的思路还是不是很清晰，感觉昨天老师课上讲得先序的迭代算法与这个算法异曲同工；
+调用栈来先序遍历，更进一步的，先一路左到头，然后回溯，去找右子树，官方发现了stack.size()和操作之间的规律，所以判断非常好判断。
+这里想强调几个编程细节。1、string读取数字操作，在上面了，非常NB，反正我是直接跪了。2、stack的思想吧，它记录了深度和先序遍历的一些关系，加了限制。
