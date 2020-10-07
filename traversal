@@ -39,3 +39,29 @@ int h,m,s;
 }
 Clock(0,0,0)
 */
+******补充非递归方法******
+class Solution {
+public:
+    
+    vector<int> preorderTraversal(TreeNode* root) {
+       stack<TreeNode*>vec;
+       vector<int> re;
+       TreeNode *t;
+       if(root==nullptr)
+       return re;
+       vec.push(root);
+       while(!vec.empty())
+       {
+           re.push_back(vec.top()->val);
+           t=vec.top();
+           vec.pop();
+           if(t->right!=nullptr) vec.push(t->right);
+           if(t->left!=nullptr) vec.push(t->left);
+       }
+       
+       return re;
+           
+}
+};
+//看了一个博客将代码思路讲得很清晰，这其实也是先序遍历的一个思路，相当于对每个节点先序遍历一次，先输出自己，然后左子树，右子树。
+https://mp.weixin.qq.com/s/c_zCrGHIVlBjUH_hJtghCg
