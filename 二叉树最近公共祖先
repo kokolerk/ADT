@@ -1,0 +1,39 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if(root==NULL||root==p||root==q)
+      return root;
+    TreeNode* left=lowestCommonAncestor(root->left,p,q);
+    TreeNode* right=lowestCommonAncestor(root->right,p,q);
+    if(left==NULL)
+    return right;
+    else{
+    if(right==NULL)
+    return left; 
+    else
+    return root; 
+    }
+     }
+    
+
+
+
+};
+/*思路一：递归，关键要明白怎么找到最近公共祖先：要么left，right分别含有p，q；要么root=p，left或者right还有另一个，不含有p，q的那个就是null；
+这就为我们提供了递归的结构思路；
+如果不含就是null；
+如果含有的话，就返回。
+说来惭愧，递归还是没有掌握扎实，这样的一个简单题目都没有看出来，果然我只能看懂那种什么结点个数、遍历之类的。。。
+思路二：也就是我一开始的思路，储存父节点，然后把p，q 的父节点比较，相当于回溯的思想。
+看博客上说，这就相当于一个后序遍历，只不过父节点还要储存p，q的值。但是在储存父节点的算法的时候，没有很好的设计出算法，就导致陷入死循环。
+
+*/
