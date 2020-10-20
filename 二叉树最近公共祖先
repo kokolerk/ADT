@@ -10,7 +10,7 @@
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-    if(root==NULL||root==p||root==q)
+    if(root==NULL||root==p||root==q)//root=q，对于一般的root，不一定是最近公共祖先
       return root;
     TreeNode* left=lowestCommonAncestor(root->left,p,q);
     TreeNode* right=lowestCommonAncestor(root->right,p,q);
@@ -20,7 +20,7 @@ public:
     if(right==NULL)
     return left; 
     else
-    return root; 
+    return root;//劣势变优势，当两者！=null，说明左边或者右边都有p或q，此时root就是最近公共祖先。 
     }
      }
     
