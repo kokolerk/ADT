@@ -1,0 +1,49 @@
+class Solution {
+public:
+    vector<bool>visited;
+    queue<int>q;
+    bool DFS(int start,int target,vector<vector<int>>& graph)
+    {   int fr;
+        visited[start]=true;
+        
+        if(start==target)
+        return true;
+        q.push(start);
+        
+        while(!q.empty())
+        { fr=q.front();
+          q.pop();
+          for(int i=0;i<graph[fr].size();i++)
+          {
+            if(visited[graph[fr][i]]==false)
+               { if(graph[fr][i]==target)
+                   return true;
+                 q.push(graph[fr][i]);
+                 visited[graph[fr][i]]=true;
+               }
+          }
+        }
+        return false;
+        
+        
+    }
+
+    bool findWhetherExistsPath(int n, vector<vector<int>>& graph, int start, int target) {
+    int head,tail;
+    vector<vector<int>>g;
+    for(int i=0;i<n;i++)
+    {
+        g.push_back({});
+    }
+    int len=graph.size();
+    for(int i=0;i<len;i++)
+    {
+        g[graph[i][0]].push_back(graph[i][1]);
+    }
+    for(int i=0;i<n;i++)
+    {
+        visited.push_back(false);
+    }
+    return DFS(start,target,g);
+    }
+};
