@@ -1,0 +1,130 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct CELLTYPE{
+int coef;
+int exp;
+struct CELLTYPE*next;
+};
+
+typedef struct CELLTYPE celltype;
+typedef celltype *LIST;
+typedef celltype *position;
+//creat next node;
+
+position attach (int c,int e,position q)
+{
+  position a;
+  a=(celltype *)malloc(sizeof(celltype));
+  a->coef=c;
+  a->exp=e;
+  a->next=NULL;
+  q->next=a;
+  return a;
+
+}
+
+/*position MAkenull(LIST L)
+{
+    L=(celltype*)malloc(sizeof(celltype));
+    L->next=NULL;
+    return L;
+}*/
+//a,plus,b,equals,c;
+
+char compare(int a,int b)
+{
+    if(a==b)
+    {
+
+        return '=';
+    }
+    else
+    {
+        if(a>b)
+            return'>';
+        else
+            return'<';
+
+    }
+}
+
+position ADD (position a,position b)
+{  position p,q,d,c;
+   int x;
+   p=a->next;q=b->next;
+
+   c=(celltype*)malloc(sizeof(celltype));//head;
+
+   d=c;//tail;
+   while(p!=NULL&&q!=NULL)
+   {
+       switch(compare(p->exp,q->exp))
+       {
+           case'=':
+            x=p->coef+q->coef;
+            if(x!=0)
+            {
+                d=attach(x,p->exp,d);
+            }
+            p=p->next;
+            q=q->next;
+            break;
+           case'>':
+            d=attach(p->coef,p->exp,d);
+            p=p->next;
+            break;
+           case'<':
+            d=attach(q->coef,q->exp,d);
+            q=q->next;
+            break;
+       }
+   }
+       while(p!=NULL)
+       {
+           d=attach(p->coef,p->exp,d);
+           p=p->next;
+       }
+       while(q!=NULL)
+       {
+           d=attach(q->coef,q->exp,d);
+           q=q->next;
+       }
+
+
+
+
+   d->next=NULL;
+
+   return c;
+
+
+
+}
+
+int main()
+{   LIST result,P,Q;
+   P=(celltype*)malloc(sizeof(celltype));
+   Q=(celltype*)malloc(sizeof(celltype));
+   position p1=attach(3,1,P);
+   //printf("%f,%d",p1->coef,p1->exp);
+   position p2=attach(1,0,p1);
+   //printf("%f,%d",p2->coef,p2->exp);
+   position q1=attach(1,2,Q);
+   //printf("%f,%d",q1->coef,q1->exp);
+   position q2=attach(2,1,q1);
+   position q3=attach(5,0,q2);
+   result=ADD(P,Q);
+   result=result->next;
+   while(result!=NULL)
+   {
+       printf("coef %d ",result->coef);
+       printf("exp %d\n",result->exp);
+       result=result->next;
+
+   }
+
+
+
+    return 0;
+}
