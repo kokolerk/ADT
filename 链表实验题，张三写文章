@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+/*张三正在写一篇文章，他的文章中只包含小写英文字母。
+输入过程中，他会使用home键将光标移动到文章的开头。// return head,insert
+他还会使用delete键删除光标前面的一个字符。//delete ptr
+输入一个字符串，表示张三敲击键盘按键的顺序。
+你的程序应使用链表模拟张三写文章的过程，并输出他写成的文章内容。//print list
+输入的字符串中仅包含小写英文字母和#和*。
+1个#表示按1下home键，1个*表示按1下delete键。
+例：
+用户输入：ab#cd*
+程序输出：cab
+本程序定义，输入为A，即终止输入
+*/
+
+struct listnode{
+    char alph;
+    struct listnode*next;
+};
+typedef struct listnode listnode;
+typedef struct listnode* position;
+// insert behind p,two condition,middle,end;
+void insert(position p,char x)
+{   position newp;
+    newp=(listnode *)malloc(sizeof(listnode));
+    newp->alph=x;
+    if(p->next==NULL)// insert final
+    {  p->next=newp;
+       newp->next=NULL;
+
+    }
+    else//insert middle
+    {
+        newp->next=p->next;
+        p->next=newp;
+    }
+}
+//delete the node p;
+void deletenode(position p,position pfore)
+{   position q;
+   //p isn't tail,cope p->next to p;ptr,ptrfore 位置不变
+   if(p->next!=NULL){
+    q=p->next;
+    p->alph=q->alph;
+    p->next=q->next;
+    free(q);
+   }
+   //p is tail
+   else
+   { pfore->next=NULL;
+     free(p);
+   }
+
+}
+int main()
+{
+    position head,ptr,ptrfore,printptr;
+    position new_ptrfore;
+    char listnode_char;
+    int count=1;
+    head=(listnode*)malloc(sizeof(listnode)); //head头指针
+    head->next=NULL;                         //creat empty list
+    ptr=head;                                //current position
+    ptrfore=head;
+    printf("please enter :\n");
+
+    scanf("%c",&listnode_char);
+
+    while(listnode_char!='A')
+    {
+        if(listnode_char!='#'&&listnode_char!='*')//normal insert
+        {
+            insert(ptr,listnode_char);
+
+            ptrfore=ptr;
+            ptr=ptr->next;
+
+
+
+        }
+
+
+        if (listnode_char=='*')//delete cursor before that's ptr;
+            {  if(count<0)
+                {
+                   printf("illegal operation! no character before cursor!");
+
+                }
+              else
+               {
+                  deletenode(ptr,ptrfore);
+                  ptr=ptrfore;
+
+                  if(ptr=head)
+                  {
+                      new_ptrfore=ptr;
+                      count--;
+
+                  }
+                  else
+                  {
+                      new_ptrfore=head;
+                      while(new_ptrfore->next!=ptr)
+                        new_ptrfore=new_ptrfore->next;
+                  }
+                  ptrfore=new_ptrfore;
+               }
+
+
+
+            }
+        if(listnode_char=='#')//return head;
+            {
+                 ptr=head;
+                 ptrfore=head;
+
+            }
+
+
+        printf("please enter: \n");
+        scanf(" %c",&listnode_char);
+
+    }
+
+
+
+    printptr=head->next;
+    while(printptr!=NULL)
+    {  printf("%c ",printptr->alph);
+       printptr=printptr->next;
+
+    }
+
+    return 0;
+}
