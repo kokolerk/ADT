@@ -1,0 +1,141 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+using namespace std;
+//定义
+struct ListNode{
+int val;
+struct ListNode *next;
+};
+
+typedef struct ListNode *node;
+typedef struct ListNode List;
+//判断是否是回文列表,fast每次前进步数为n，slow为1.
+bool isPalindrome(node head)
+{ node fast=head;
+  node slow=head;
+  int len=0;
+  //判断是否是空表
+  if(head==NULL||head->next==NULL)
+    return false;
+  //第一次循环开始
+  while(fast->next!=NULL)
+  { fast=fast->next;
+    len++;
+  }
+  if(len==1)
+    return true;
+  slow=slow->next;
+  if(slow->val!=fast->val)
+  return false;
+  for(int i=1;i<=len/2;i++)
+  {
+    for(int i=0;i<len;i++)
+    {
+        if(fast->next==NULL)
+            fast=head;
+        else
+            fast=fast->next;
+    }
+    slow=slow->next;
+    if(slow->val!=fast->val)
+      return false;
+    else
+      continue;
+  }
+
+    return true;
+
+}
+//判断是否有圈，并输出圈的长度
+int isCircle(node head)
+{ node slow=head;
+  node fast=head;
+  node postion;
+  int len=0;
+  if(head==NULL||head->next==NULL)
+    return -1;
+
+  while(fast!=NULL&&fast->next!=NULL)
+  {
+      fast=fast->next->next;
+      slow=slow->next;
+      if(slow==fast)
+      {
+          break;
+      }
+
+
+
+  }
+  if(fast==NULL||fast->next==NULL)
+    return -1;
+  postion=slow;
+  slow=slow->next;
+  len++;
+  while(slow!=postion)
+  {
+      len++;
+      slow=slow->next;
+  }
+  return len;
+}
+//创建一个链表来测试
+void MakeNULL(node &head,node &tail)
+{
+    head=new List;
+    head->next=NULL;
+    tail=head;
+
+}
+
+void Insert(node &tail,int val)
+{  node temp=new List;
+   temp->val=val;
+   tail->next=temp;
+   tail=temp;
+
+}
+
+int main()
+{   node head;
+    node tail;
+    node position;
+    MakeNULL(head,tail);
+    int val=0;
+    printf("please enter the number :");
+    scanf("%d",&val);
+    while(val!=-1)
+    {
+        Insert(tail,val);
+        printf("please enter the number :");
+        scanf("%d",&val);
+    }
+    position=head->next;
+    while(position!=NULL)
+    {
+        printf("%d",position->val);
+        position=position->next;
+        if(position!=NULL)
+        printf("->");
+
+    }
+
+    /*回文测试
+    bool backnode=isPalindrome(head);
+    if(backnode==true)
+    printf("\n这是回文");
+    else
+    printf("\n这不是回文");*/
+    //圈的测试
+    tail->next=head->next->next;
+    int len=isCircle(head);
+    if(len==-1)
+        printf("\n没有圈");
+    else
+        printf("\n圈的长度为%d",len);
+
+
+
+    return 0;
+}
