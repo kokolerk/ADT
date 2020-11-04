@@ -1,0 +1,385 @@
+#include<iostream>
+#include<iomanip>
+#include<stdlib.h>//system
+#include<stdio.h>
+#include<time.h>//function computer
+#define N 10
+
+using namespace std;
+
+
+
+ struct Position{
+ int x;
+ int y;
+ };
+
+ class five_game
+ {
+    public:
+        five_game();//yes...improve
+        void play();
+   //protected:
+        void initializion();//yes
+        int chosing();//yes first last
+        void printchessboard();//yes
+        int JudgeIflegal(struct Position &pos);//1 yes;2 no;
+        int JudgeIfOver( struct Position &pos,char flag);
+        bool GetVoctory(struct Position &pos,char flag  ) ;
+        void player(struct Position &pos,char peo);//yes
+        void computer(struct Position&pos,char com);
+        //int score(int &humanChessmanNum,int &machineChessmanNum);//yes...rewrite
+     private:
+
+        char ChessBoard[N][N];
+        char com='*';
+        char peo='x';
+        //int humanChessmanNum=0;
+        //int machineChessmanNum=0;
+       // int scoreChess[N][N];
+
+ };
+ //数据来自网上
+  /*int five_game::score(int &humanChessmanNum,int &machineChessmanNum)
+  {     //1.既有人类落子，又有机器落子，判分为0
+        if(humanChessmanNum > 0 && machineChessmanNum > 0){
+			return 0;
+		}
+		//2.全部为空，没有落子，判分为7
+		if(humanChessmanNum == 0 && machineChessmanNum == 0){
+			return 7;
+		}
+		//3.机器落1子，判分为35
+		if(machineChessmanNum == 1){
+			return 35;
+		}
+		//4.机器落2子，判分为800
+		if(machineChessmanNum == 2){
+			return 800;
+		}
+		//5.机器落3子，判分为15000
+		if(machineChessmanNum == 3){
+			return 15000;
+		}
+		//6.机器落4子，判分为800000
+		if(machineChessmanNum == 4){
+			return 800000;
+		}
+		//7.人类落1子，判分为15
+		if(humanChessmanNum == 1){
+			return 15;
+		}
+        //8.人类落2子，判分为400
+		if(humanChessmanNum == 2){
+			return 400;
+		}
+		//9.人类落3子，判分为1800
+		if(humanChessmanNum == 3){
+			return 1800;
+		}
+		//10.人类落4子，判分为100000
+		if(humanChessmanNum == 4){
+			return 100000;
+		}
+
+
+  }*/
+void five_game::computer(struct Position&pos,char com)
+{
+    system("cls");  //打印棋盘
+    printchessboard();//有问题
+    int x = 0;
+    int y = 0;
+    while (1)                     //循环查找空位置
+    {
+        x = (rand() % N);      //产生从1~N的随机数
+        srand((unsigned int)time(NULL));
+        y = (rand() % N);      //产生从1~N的随机数
+        srand((unsigned int)time(NULL));
+        if (ChessBoard[x][y] == ' ')        //如果这个位置为空（没有棋子），跳出循环，下棋
+        {
+            break;
+        }
+    }
+    pos.x = x;
+    pos.y = y;
+    ChessBoard[pos.x][pos.y] = com;
+
+
+
+
+}
+//chosing=1;玩家先。
+
+void five_game::play()
+{       struct Position diannao;   //电脑
+        struct Position people;   //玩家2
+        while (1){
+            int mode = chosing();
+            while (1){
+                if (mode == 1){       //玩家先走
+                    player(people,peo);         //玩家走
+                    if (GetVoctory(people,peo)){       //2代表玩家
+                        break;
+                    }
+                    computer(diannao, com);            //电脑走
+                    if (GetVoctory(diannao,com)){       //电脑，为真则表示电脑获胜
+                        break;
+                    }
+
+                }
+                else{               //电脑先走
+                 computer(diannao, com);            //电脑走
+                    if (GetVoctory(diannao,com)){       //电脑，为真则表示电脑获胜
+                        break;
+                    }
+                  player(people,peo);         //玩家走
+                    if (GetVoctory(people, peo)){       //2代表玩家
+                        break;
+                    }
+                }
+            }
+ cout << "======再来一局=======" << endl;
+            cout << "再来一局输入1，退出输入2"<<endl;
+            int s;
+          cin >> s;
+              if (s==2){
+                break;
+            }
+
+
+        }
+
+}
+
+
+bool five_game::GetVoctory(struct Position &pos,char flag  )
+{
+if (JudgeIfOver(pos, flag) != 0){    //判断有无人获胜
+            if (JudgeIfOver(pos, flag) == 1){     //判断是否有人获胜,1表示获胜
+                system("cls");
+
+                printchessboard();
+                   //打印棋盘
+                if (flag==com){
+                    cout << "电脑获胜！\a" << endl;
+                }
+                else{
+                    cout<<"恭喜玩家获胜!\a"<<endl;
+                }
+            }
+            else{
+                cout<<"和局!\a"<<endl;
+            }
+            return true;      //有人获胜
+        }
+     return false;         //没人获胜
+
+}
+
+ void five_game::player(struct Position &pos,char peo)
+{   system("cls");
+    printchessboard();
+    int judge;
+    cout<<"请输入落子坐标：x y";
+    while(1)
+    { cin>>pos.x>>pos.y;
+    judge=JudgeIflegal(pos);
+
+    if(judge==0)
+    {
+        cout<<"非法坐标！请重新输入。"<<endl;
+        cout<<"请输入落子坐标 x y ：";
+
+    }
+
+    else
+      { ChessBoard[pos.x][pos.y]=peo;
+        break;}
+    }
+
+ }
+
+five_game::five_game()
+{
+    initializion();
+}
+
+void five_game::initializion()
+{
+    for(int i=0; i<N; i++)
+    {
+        for(int j=0; j<N; j++)
+        {
+            ChessBoard[i][j]=' ';
+        }
+    }
+
+}
+
+int five_game::chosing()
+{   //system("cls");
+    initializion();
+    cout<<"***********************************************************"<<endl;
+    cout<<"**************欢迎来到10*10五子棋游戏.无敌版！*************"<<endl;
+    cout<<"*************您是否还在为无法打败计算机而气恼？************"<<endl;
+    cout<<"**********在本无敌版游戏里面，您总可以完胜计算机***********"<<endl;
+    cout<<"*****现在请选择您是先手还是后手，先手请选1，后手请选2。****"<<endl;
+    cout<<"***********************************************************"<<endl;
+
+    while(1)
+    {
+        int i;
+        cin>>i;
+        if(i==1||i==2)
+        {
+            return i;
+        }
+        else
+        {
+            cout<<"数字非法，请重新输入";
+        }
+    }
+
+}
+
+
+void five_game::printchessboard()
+{    cout<<"   0   1   2   3   4   5   6   7   8   9"<<endl;
+
+        for (int i = 0; i < N ; ++i)
+        {
+            cout<<setw(2)<<i<<" ";
+            for(int j=0;j<N;j++)
+            {
+                cout<<ChessBoard[i][j]<<"   ";
+            }
+             cout << endl;
+             cout<<endl;
+
+        }
+
+}
+//1合法，0非法。
+int five_game::JudgeIflegal( struct Position &pos)
+{
+    if(pos.x>=0&&pos.x<N&&pos.y>=0&&pos.y<N)
+    {
+        if(ChessBoard[pos.x][pos.y]==' ')
+            return 1;
+    }
+    return 0;
+}
+//判断是否赢 1 win;-1 else
+int five_game::JudgeIfOver(struct Position &pos,char flag)
+{int first,last;
+    //判断列
+    if(pos.x-4>=0)
+       {
+         first=pos.x-4;
+       }
+    else
+    {
+        first=0;
+    }
+    if(pos.x+4<N)
+    {
+        last=pos.x+4;
+    }
+    else
+    {
+        last=N-1;
+    }
+    for(int i=first,j=pos.y;i+4<=last;i++)
+    {
+        if(ChessBoard[i][j]==flag&&ChessBoard[i+1][j]==flag&&ChessBoard[i+2][j]==flag&&ChessBoard[i+3][j]==flag&&ChessBoard[i+4][j]==flag)
+        return 1;
+    }
+   //判断行
+    if(pos.y-4>=0)
+       {
+         first=pos.y-4;
+       }
+    else
+    {
+        first=0;
+    }
+    if(pos.y+4<N)
+    {
+        last=pos.y+4;
+    }
+    else
+    {
+        last=N-1;
+    }
+    for(int i=pos.x,j=first;j+4<=last;j++)
+    {
+        if(ChessBoard[i][j]==flag&&ChessBoard[i][j+1]==flag&&ChessBoard[i][j+2]==flag&&ChessBoard[i][j+3]==flag&&ChessBoard[i][j+4]==flag)
+        return 1;
+    }
+  //判断主对角线
+        int begin;
+        int end;
+        int len;    //相对长度
+        int start;
+        int finish;
+        pos.x > pos.y ? len = pos.y  : len = pos.x ;
+        if (len > 4){
+            len = 4;
+        }
+
+        begin = pos.x - len;       //横坐标起始位置
+        start = pos.y - len;       //纵坐标起始位置
+
+        pos.x > pos.y ? len = N -1- pos.x : len = N-1- pos.y;
+        if (len > 4){
+            len = 4;
+        }
+        end = pos.x + len;         //横坐标结束位置
+        finish = pos.y + len;      //纵坐标结束位置
+
+        for (int i = begin, j = start; (i + 4 <= end) && (j + 4 <= finish); ++i, ++j){
+            if (ChessBoard[i][j] == flag && ChessBoard[i + 1][j + 1] == flag &&
+                ChessBoard[i + 2][j + 2] == flag && ChessBoard[i + 3][j + 3] == flag &&
+                ChessBoard[i + 4][j + 4] == flag)
+                return 1;
+        }
+        //判断副对角线
+        (pos.x ) > (N-1 - pos.y) ? len = N-1 - pos.y : len = pos.x ;
+        if (len > 4){
+            len = 4;
+        }
+        begin = pos.x- len;       //横坐标起始位置
+        start = pos.y + len;       //纵坐标起始位置
+
+        (N-1 - pos.x) > (pos.y ) ? len = pos.y : len = N -1- pos.x;
+        if (len > 4){
+            len = 4;
+        }
+        end = pos.x+ len;         //横坐标结束位置
+        finish = pos.y - len;      //纵坐标结束位置
+        for (int i = begin, j = start; (i + 4 <= end) && (j - 4 >= finish); ++i, --j){
+            if (ChessBoard[i][j] == flag && ChessBoard[i + 1][j - 1] == flag &&
+                ChessBoard[i + 2][j - 2] == flag && ChessBoard[i + 3][j - 3] == flag &&
+                ChessBoard[i + 4][j - 4] == flag)
+                return 1;
+        }
+        //该位置并未下棋
+       for (int x = 1; x < N + 1; ++x){
+            for (int y = 1; y < N + 1; ++y){
+                if (ChessBoard[x][y] == ' '){
+                    return 0;       //未下棋
+                }
+            }
+        }
+        return -1;      //和局
+}
+
+
+int main()
+{
+  system("color F0");
+    five_game gobang;
+    gobang.play();
+return 0;
+}
