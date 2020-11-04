@@ -131,7 +131,7 @@ void topoQueue(graph*g)
 
 }
 
-//topo-DFS
+//topo-DFS，作者对这个递归还是似懂非懂，不得不感叹，神理解递归！！！
 void topo(int i,graph*g,bool(&visited)[MAX],stack<vernode>(&s))
 {
 
