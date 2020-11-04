@@ -1,0 +1,180 @@
+#include <iostream>
+#define MAX 30
+#include<stack>
+#include<queue>
+using namespace std;
+
+//adjlist
+/*拓扑排序，也可以判断有向图有没有圈
+三种代码思路
+队列，关键，找入度为0的点，删除，push
+栈，同上，但是和队列的输出顺序不同
+DFS，反向输出*/
+typedef struct node1
+{
+    int vertex;
+    int cost;
+    struct node1 *next;
+} edgenode;
+
+typedef struct node2
+{
+    int VBIG;
+    int indeg;
+    edgenode* firstedge;
+} vernode;
+
+typedef struct
+{
+    vernode verlist[MAX];
+    int v,e;
+} graph;
+
+//direction graph
+void create(graph* g)
+{
+    int a,b,cos;
+    cin>>g->v>>g->e;
+    for(int i=0; i<g->v; i++)
+    {
+        g->verlist[i].VBIG=i;
+        g->verlist[i].firstedge=NULL;
+        g->verlist[i].indeg=0;
+    }
+    for(int i=0; i<g->e; i++)
+    {
+        cin>>a>>b>>cos;
+        edgenode* NEW=new edgenode();
+        NEW->vertex=b;
+        NEW->cost=cos;
+        NEW->next=g->verlist[a].firstedge;
+        g->verlist[a].firstedge=NEW;
+        g->verlist[b].indeg++;
+    }
+    //test
+    /*edgenode* p;
+    for(int i=0;i<g->v;i++)
+    {   cout<<g->verlist[i].VBIG<<"->";
+        p=g->verlist[i].firstedge;
+        while(p!=NULL)
+        {
+            cout<<p->vertex<<"("<<p->cost<<")"<<"->";
+            p=p->next;
+        }
+        cout<<endl;
+    }*/
+}
+
+
+//topo-stack
+void topologicsort(graph *g)
+{
+    stack<vernode>s;
+    edgenode* p;
+    int cou=0;
+    for(int i=0; i<g->v; i++)
+    {
+        if(g->verlist[i].indeg==0)
+            s.push(g->verlist[i]);
+    }
+    while(!s.empty())
+    {
+        cout<<s.top().VBIG<<" ";
+        cou++;
+        p=s.top().firstedge;
+        s.pop();
+        while(p!=NULL)
+        {
+            g->verlist[p->vertex].indeg--;
+            if(g->verlist[p->vertex].indeg==0)
+            {
+                s.push(g->verlist[p->vertex]);
+            }
+            p=p->next;
+        }
+    }
+    if(cou<g->v)
+    {
+        cout<<endl<<"the graph has circle.";
+    }
+
+
+}
+
+//topo-queue,reverse
+void topoQueue(graph*g)
+{
+    queue<vernode>q;
+    edgenode*p;
+    int cou=0;
+    for(int i=0; i<g->v; i++)
+    {
+        if(g->verlist[i].indeg==0)
+            q.push(g->verlist[i]);
+    }
+    while(!q.empty())
+    {
+        cout<<q.front().VBIG<<" ";
+        cou++;
+        p=q.front().firstedge;
+        q.pop();
+        while(p!=NULL)
+        {
+            g->verlist[p->vertex].indeg--;
+            if(g->verlist[p->vertex].indeg==0)
+                q.push(g->verlist[p->vertex]);
+            p=p->next;
+        }
+    }
+    if(cou<g->v)
+        cout<<endl<<"the graph has circle.";
+
+}
+
+//topo-DFS
+void topo(int i,graph*g,bool(&visited)[MAX],stack<vernode>(&s))
+{
+
+    s.push(g->verlist[i]);
+    visited[i]=true;
+    edgenode*p;
+    p=s.top().firstedge;
+    while(p!=NULL)
+    {   if(visited[p->vertex]==false)
+        {
+        topo(p->vertex,g,visited,s);
+        }
+        p=p->next;
+    }
+    cout<<s.top().VBIG<<" ";
+    s.pop();
+}
+
+void topoDFS(graph*g,bool(&visited)[MAX],stack<vernode>(&s))
+{
+    for(int i=0; i<g->v; i++)
+    {
+        visited[i]=false;
+    }
+    for(int i=0; i<g->v; i++)
+    {
+        if(visited[i]==false)
+            topo(i,g,visited,s);
+    }
+
+}
+
+
+int main()
+{
+    graph *myg=new graph();
+    create(myg);
+    //topologicsort(myg);
+    //cout<<endl;
+    //topoQueue(myg);//不能同时进行拓扑排序
+    bool visited[MAX];
+    stack<vernode>s;
+    topoDFS(myg,visited,s);
+
+    return 0;
+}
