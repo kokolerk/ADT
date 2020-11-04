@@ -1,0 +1,360 @@
+#include <iostream>
+#include <string.h>
+#include <string>
+#define MAX 30
+using namespace std;
+//从前往后反着储存数
+struct LIST{
+int elem[MAX]={};//数组初始化为0.
+bool positive;//整数为true，负数为false；
+int top;//首位的位置
+
+};
+typedef struct LIST NUM;
+
+void initial(LIST&NUM)
+{ NUM.positive=true;
+  for(int i=0;i<MAX;i++)
+  {
+      NUM.elem[i]=0;
+  }
+  NUM.top=MAX-1;
+
+}
+//接受大数的绝对值，从后往前储存。
+void acceptNUM(string a,NUM &num)
+{
+    int len=a.size();
+    if(len>MAX)
+    {
+        cout<<"outside the size!"<<endl;
+
+    }
+    int pos=0;
+    num.top=MAX-len;
+    for(int i=num.top;i<MAX;i++)
+    {
+        num.elem[i]=a[pos]-'0';
+        pos++;
+    }
+
+
+
+}
+//比较两个大数的大小,第一个数大，就是1，第二个数大，就是-1，两数相等，就是0.
+int compareNUM(NUM num1,NUM num2)
+{
+    if(num1.positive!=num2.positive)
+    {
+        if(num1.positive==true)
+            return 1;
+        else
+            return -1;
+    }
+    else{ int pos;
+        if(num1.positive==true)
+        {
+            if(num1.top<num2.top)
+                return 1;//num1位数多。
+            if(num1.top>num2.top)
+                return -1;//num2位数多。
+            if(num1.top==num2.top)
+            {   pos=num1.top;
+                while(num1.elem[pos]==num2.elem[pos])
+                {  if(pos!=MAX-1)
+                    pos++;
+                   else
+                    return 0;
+                }
+                if(num1.elem[pos]>num2.elem[pos])
+                    return 1;
+                else
+                    return -1;
+
+            }
+
+        }
+        else{
+            if(num1.top<num2.top)
+                return -1;//num1位数多。
+            if(num1.top>num2.top)
+                return 1;//num2位数多。
+            if(num1.top==num2.top)
+            {   pos=num1.top;
+                while(num1.elem[pos]==num2.elem[pos])
+                {  if(pos!=MAX-1)
+                    pos++;
+                   else
+                    return 0;
+                }
+                if(num1.elem[pos]>num2.elem[pos])
+                    return -1;
+                else
+                    return 1;
+
+            }
+        }
+    }
+}
+//一种简单的减法，默认num1,num2都是正数，且num1大于等于num2。
+void plusminus(NUM num1,NUM num2,NUM &result)
+{
+
+    int temp;
+    int pre=0;
+    int pos=MAX-1;
+    int val=compareNUM(num1,num2);
+    if(val==0)
+    {
+        result.positive=true;
+        result.top=MAX-1;
+        result.elem[result.top]=0;
+    }
+    else
+    {
+        while(pos!=-1)
+        {
+            temp=num1.elem[pos]-pre-num2.elem[pos];
+            if(temp>=0)
+            {
+                result.elem[pos]=temp;
+                pre=0;
+                pos--;
+            }
+            else
+            {
+                result.elem[pos]=temp+10;
+                pre=1;
+                pos--;
+            }
+
+        }
+        for(int i=0; i<MAX; i++)
+        {
+            if(result.elem[i]==0)
+                continue;
+            else
+            {
+                result.top=i;
+                break;
+            }
+
+        }
+
+
+    }
+}
+
+//两个大数相加的全部情况。
+void PLUS(NUM num1,NUM num2,NUM &result)
+{   int pos;
+    int pre=0;
+    int temp;
+    int val;
+
+    bool num1postive=num1.positive;
+    //两个大数的绝对值相加
+    if(num1.positive==num2.positive)
+{
+    result.positive=num1.positive;
+    pos=MAX-1;
+    while(pos!=-1){
+          temp=num1.elem[pos]+num2.elem[pos]+pre;
+        if(temp<10)
+        {
+            result.elem[pos]=temp;
+            pre=0;
+            pos--;
+
+        }
+        else{
+            result.elem[pos]=temp-10;
+            pre=1;
+            pos--;
+        }
+    }
+    for(int i=0;i<MAX;i++)
+    {
+        if(result.elem[i]==0)
+            continue;
+        else
+            {result.top=i;
+             break;
+            }
+
+    }
+
+}
+else{   num1.positive=true;
+        num2.positive=true;
+        val=compareNUM(num1,num2);
+        if(val==1)
+        {
+            plusminus(num1,num2,result);
+            if(num1postive==true)
+                result.positive=true;
+            else
+                result.positive=false;
+        }
+        else
+        {
+            plusminus(num2,num1,result);
+            if(num1postive==true)
+                result.positive=false;
+            else
+                result.positive=true;
+
+        }
+
+
+
+
+}
+
+
+}
+
+//两个大数的减法,1-2;变形成为1+（-2）。
+void MINUS(NUM num1,NUM num2,NUM &result)
+{
+   if(num2.positive==true)
+    num2.positive=false;
+   else
+    num2.positive=true;
+   PLUS(num1,num2,result);
+}
+
+
+//两个大数的乘法
+void multi(NUM num1,NUM num2,NUM &result)
+{
+    int pre=0;
+    int temp=0;
+    int pos=MAX-1;
+    int posnum2=MAX-1;
+    int resultPos;
+    if(num1.positive==num2.positive)
+        result.positive=true;
+    else
+        result.positive=false;
+    while(posnum2>=num2.top)
+    {
+       while(pos>=num1.top-1)
+        {   resultPos=pos+posnum2-MAX+1;
+            if(resultPos>=0)//考虑合适的终止条件，必须为非负数，否则会出现问题。
+            {
+            temp=num1.elem[pos]*num2.elem[posnum2]+pre+result.elem[resultPos];
+            result.elem[resultPos]=temp%10;
+            pre=temp/10;
+            pos--;
+            }
+            else
+              break;
+        }
+         posnum2--;
+         pos=MAX-1;
+         pre=0;
+
+    }
+          for(int i=0; i<MAX; i++)
+        {
+            if(result.elem[i]==0)
+                continue;
+            else
+            {
+                result.top=i;
+                break;
+            }
+        }
+
+
+}
+
+int main()
+{   string b;
+    string a;
+    char chr;
+    NUM num1;
+    NUM num2;
+    NUM result;
+    int pos=0;
+    while(1){
+    pos=0;
+    a.clear();
+    b.clear();
+    initial(num1);
+    initial(num2);
+    initial(result);
+    cin>>b;
+    if(b[pos]=='-')
+      {
+          a.push_back(b[pos]);
+          pos++;
+      }
+    while(isdigit(b[pos]))
+    {
+        a.push_back(b[pos]);
+        pos++;
+    }
+    //cout<<"第一个大数；"<<a<<endl;
+    //第一个大数；
+    if(isdigit(a[0])==true)
+    {   num1.positive=true;
+        acceptNUM(a,num1);
+    }
+    else{
+        num1.positive=false;
+        a.erase(0,1);
+        acceptNUM(a,num1);
+    }
+    chr=b[pos];
+    //cout<<"chr is "<<chr<<endl;
+    pos++;
+    a.clear();
+    if(b[pos]=='-')
+      {
+          a.push_back(b[pos]);
+          pos++;
+      }
+    while(isdigit(b[pos]))
+    {
+        a.push_back(b[pos]);
+        pos++;
+    }
+    //cout<<"第二个大数；"<<a<<endl;
+    //第二个大数；
+    if(isdigit(a[0])==true)
+    {   num2.positive=true;
+        acceptNUM(a,num2);
+    }
+    else{
+        num2.positive=false;
+        a.erase(0,1);
+        acceptNUM(a,num2);
+    }
+    //判断运算；
+     switch(chr)
+    {
+    case'+':
+        PLUS(num1,num2,result);
+        break;
+    case'-':
+        MINUS(num1,num2,result);
+        break;
+    case'*':
+        multi(num1,num2,result);
+        break;
+    default:
+        cout<<"wrong operator!"<<endl;
+    }
+
+    if(result.positive==false)
+        cout<<"-";
+    for(int i=result.top; i<MAX; i++)
+    {
+        cout<<result.elem[i];
+    }
+    cout<<endl;
+    }
+    return 0;
+}
